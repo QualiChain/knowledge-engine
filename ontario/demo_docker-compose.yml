@@ -1,0 +1,56 @@
+version: "2"
+services:
+  ontario:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    hostname: ontario
+    container_name: ontario
+    domainname: sdl
+    volumes:
+      - ./demo/mappings:/mappings
+      - ./demo/configurations:/configurations
+      - ./demo/queries:/queries
+      - ./demo/results:/results
+      - ./demo/data/tsv:/data/tsv
+      - ./demo/data/json:/data/json
+    ports:
+      - "5001:5000"
+    environment:
+      - CONFIG_FILE=/configurations/config.json
+    networks:
+      - osdl
+
+  rdfstore:
+    image: kemele/virtuoso:7-stable
+    hostname: kegg
+    container_name: keggrdf
+    domainname: sdl
+    volumes:
+      - ./demo/data/rdf/KEGG:/data/toLoad
+    ports:
+      - "11385:8890"
+      - "1116:1111"
+    networks:
+      - osdl
+
+  rdbstore:
+    image: mysql:5.7.16
+    hostname: drugbank
+    container_name: drugbankrdb
+    domainname: sdl
+    volumes:
+      - ./demo/data/tsv/drugbank:/data/tsv/drugbank
+      - ./demo/data/rdb/volumes/drugbank_mysql:/var/lib/mysql
+      - ./demo/data/rdb/drugbank:/docker-entrypoint-initdb.d/
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+    ports:
+      - "9000:3306"
+    networks:
+      - osdl
+
+
+networks:
+  osdl:
+    external: false

@@ -1,0 +1,9 @@
+version: "2"
+services:
+  ontario:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ontario
+    ports:
+      - "5001:5000"
