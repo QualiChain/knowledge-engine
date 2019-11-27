@@ -24,6 +24,7 @@ first, extract the data inside the demo folder:
 cd demo
 tar -xvf data.tar.gz
 tar -xvf data2.tar.gz
+chmod a+rw -R data
 cd ..
 ```
 This will create ./demo/data with the data we use for the demo.
