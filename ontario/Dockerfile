@@ -11,7 +11,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends openjdk-8-jre-headless && \
     apt-get clean
 
-COPY ./ontario/ /Ontario
+COPY ./Ontario/ /Ontario
 RUN cd /Ontario && pip3 install -r requirements.txt && \
     python3 setup.py install
 
