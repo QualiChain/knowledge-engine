@@ -36,7 +36,7 @@ The containers for the databases are taken from dockerhub.
 To start the databases together with ontario, run angain in the top level folder:
 
 ```bash
-docker-compose -d -f demo_docker-compose.yml up
+docker-compose -f demo_docker-compose.yml up -d
 ```
 
 Check if the containers are started:
