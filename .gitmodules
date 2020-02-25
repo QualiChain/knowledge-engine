@@ -1,0 +1,3 @@
+[submodule "ontario/Ontario"]
+	path = ontario/Ontario
+	url = https://github.com/SDM-TIB/Ontario.git
