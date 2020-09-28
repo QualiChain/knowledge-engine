@@ -1,0 +1,3 @@
+[submodule "DeTrusty"]
+	path = DeTrusty
+	url = https://github.com/SDM-TIB/DeTrusty.git
