@@ -98,6 +98,8 @@ class Planner(object):
                     ol.append(self.includePhysicalOperatorsUnionBlock(bgp.bgg))
                 elif isinstance(bgp, UnionBlock):
                     tl.append(self.includePhysicalOperatorsUnionBlock(bgp))
+#                elif isinstance(bgp, Service):
+#                    tl.append(bgp)
         elif isinstance(jb.triples, Node) or isinstance(jb.triples, Leaf):
             tl = [self.includePhysicalOperators(jb.triples)]
         else:  # this should never be the case..
@@ -611,7 +613,7 @@ class TreePlan(object):
             s = s + self.right.aux(n + "  ")
         return s
 
-    def execute(self, outputqueue, processqueue=Queue()):
+    def execute(self, outputqueue, processqueue=Queue(), token=None):
         # Evaluates the execution plan.
         if self.left: #and this.right: # This line was modified by mac in order to evaluate unary operators
             qleft  = Queue()
@@ -622,18 +624,18 @@ class TreePlan(object):
             #print "self.right: ", self.right
             #print "self.left: ", self.left
 
-            p1 = Process(target=self.left.execute, args=(qleft, processqueue, ))
+            p1 = Process(target=self.left.execute, args=(qleft, processqueue, token, ))
             p1.start()
             # processqueue.put(p1.pid)
             if "Nested" in self.operator.__class__.__name__:
-                p3 = Process(target=self.operator.execute, args=(qleft, self.right, outputqueue, processqueue, ))
+                p3 = Process(target=self.operator.execute, args=(qleft, self.right, outputqueue, processqueue, token, ))
                 p3.start()
                 # processqueue.put(p3.pid)
                 return
 
             # Check the right node to determine if evaluate it or not.
             if self.right and ((self.right.__class__.__name__ == "IndependentOperator") or (self.right.__class__.__name__ == "TreePlan")):
-                p2 = Process(target=self.right.execute, args=(qright, processqueue, ))
+                p2 = Process(target=self.right.execute, args=(qright, processqueue, token, ))
                 p2.start()
                 # processqueue.put(p2.pid)
             else:
@@ -734,16 +736,16 @@ class IndependentOperator(object):
     def aux(self, n):
         return self.tree.aux(n)
 
-    def execute(self, outputqueue, processqueue=Queue()):
+    def execute(self, outputqueue, processqueue=Queue(), token=None):
 
         if self.tree.service.limit == -1:
-            self.tree.service.limit = 10000 #TODO: Fixed value, this can be learnt in the future
+            self.tree.service.limit = 10000  # TODO: Fixed value, this can be learnt in the future
 
         # Evaluate the independent operator.
 
         #self.q = Queue()
 
-        p = Process(target=self.contact, args=(self.server, self.query_str, outputqueue, self.config, self.tree.service.limit,))
+        p = Process(target=self.contact, args=(self.server, self.query_str, outputqueue, self.config, self.tree.service.limit, self.tree.service.is_solid_endpoint, token))
         p.start()
         # processqueue.put(p.pid)
 

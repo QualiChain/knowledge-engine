@@ -48,7 +48,7 @@ Example output:
 This API call is used to send a query to the federation and retrieve the result.
 The result will be returned as a JSON (see example below).
 
-Example call:
+Example call (see below this example for an example using private data stores):
 
 ```bash
 curl -X POST -d "query=SELECT ?s WHERE { ?s a <http://dbpedia.org/ontology/Scientist> } LIMIT 10" localhost:5000/sparql
@@ -58,20 +58,28 @@ Example output for the above query (shortened to two results):
 
 ```yaml
 {
-    "cardinality": 10,
-    "execution_time": 0.1437232494354248,
-    "output_version": "1.0",
-    "variables": ["s"],
-    "result": [
-        {
-            "s": "http://dbpedia.org/resource/A.E._Dick_Howard",
-            "__meta__": {"is_verified": True}
-        },
-        {
-            "s": "http://dbpedia.org/resource/A.F.P._Hulsewé",
-            "__meta__": {"is_verified": True}
+  "cardinality": 10,
+  "execution_time": 0.1437232494354248,
+  "output_version": "2.0",
+  "head": { "vars": ["s"] },
+  "results": {
+    "bindings": [
+      {
+        "__meta__": { "is_verified": True },
+        "s": {
+          "type": "uri",
+          "value": "http://dbpedia.org/resource/A.E._Dick_Howard"
         }
+      },
+      {
+        "__meta__": { "is_verified": True },
+        "s": {
+          "type": "uri",
+          "value": "http://dbpedia.org/resource/A.F.P._Hulsewé"
+        }
+      },
     ]
+  }
 }
 ```
 'cardinality' is the number (integer) of results retrieved,
@@ -81,6 +89,11 @@ Example output for the above query (shortened to two results):
 'result' is a list of dictionaries containing the results of the query, using the variables as keys;
 metadata about the result verification is included in the key '\_\_meta\_\_'.
 The current version returns all results as verified as can be seen in the key 'is_verified' of the metadata.
+
+**If you want to query private data that is stored in a Solid Pod, you need to use the SPARQL 1.1 Service clause and add additional information to your request:**
+```bash
+curl -X POST -d "query=SELECT DISTINCT ?c WHERE { SERVICE <URL_OF_THE_POD_YOU_WANT_TO_QUERY> { ?s a ?c } }" -d "sparql1_1=True" -d "token=YOUR_QC_AUTH_TOKEN" localhost:5000/sparql
+```
 
 ## License
 DeTrusty is licensed under GPL-3.0.
