@@ -1,0 +1,4 @@
+.idea/
+venv/
+Dockerfile
+DeTrusty/Sparql/Parser/parsetab.py
