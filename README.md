@@ -5,9 +5,9 @@ At this stage, only SPARQL endpoints are supported.
 DeTrusty differs from other query engines through its focus on the explainability and trustworthiness of the query result.
 
 **Notice: DeTrusty is under active development! 
-The current version is a full-fledged federated query engine following the SPARQL 1.0 protocol.
+The current version is a federated query engine following the SPARQL 1.1 protocol, i.e., you can use the SERVICE clause to specify the endpoint.
 However, the parts about the explainability and trustworthiness have not been implemented yet.
-A later version of DeTrusty will allow the use of the SERVICE clause.**
+Additionally, the GROUP BY operator has not yet been implemented.**
 
 ## Running DeTrusty
 In order to run DeTrusty, build the Docker image from the source code:
