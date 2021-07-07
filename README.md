@@ -12,11 +12,11 @@ Additionally, the GROUP BY operator has not yet been implemented.**
 ## Running DeTrusty
 In order to run DeTrusty, build the Docker image from the source code:
 
-``docker build . -t sdmtib/detrusty:v0.2.0``
+``docker build . -t sdmtib/detrusty:v0.3.0-qc``
 
 Once the Docker image is built, you can start DeTrusty:
 
-``docker run --name DeTrusty -d -p 5000:5000 sdmtib/detrusty:v0.2.0``
+``docker run --name DeTrusty -d -p 5000:5000 sdmtib/detrusty:v0.3.0-qc``
 
 You can now start to make POST requests to the DeTrusty API running at localhost:5000.
 
@@ -42,7 +42,7 @@ curl -X POST localhost:5000/version
 
 Example output:
 
-``DeTrusty v0.2.0``
+``DeTrusty v0.3.0-qc``
 
 ### /sparql
 This API call is used to send a query to the federation and retrieve the result.
