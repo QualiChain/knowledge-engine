@@ -1,22 +1,22 @@
-__author__ = 'Kemele M. Endris'
+__author__ = 'Kemele M. Endris and Philipp D. Rohde'
 
 import urllib.parse
 import urllib.request
-
 from multiprocessing import Process, Queue
 
-from DeTrusty.Operators.AnapsidOperators.Xproject import Xproject
+from DeTrusty.Decomposer.Tree import Leaf, Node
 from DeTrusty.Operators.AnapsidOperators.Xdistinct import Xdistinct
-from DeTrusty.Operators.AnapsidOperators.Xoffset import Xoffset
-from DeTrusty.Operators.AnapsidOperators.Xlimit import Xlimit
-from DeTrusty.Operators.AnapsidOperators.Xunion import Xunion
 from DeTrusty.Operators.AnapsidOperators.Xfilter import Xfilter
 from DeTrusty.Operators.AnapsidOperators.Xgjoin import Xgjoin
 from DeTrusty.Operators.AnapsidOperators.Xgoptional import Xgoptional
+from DeTrusty.Operators.AnapsidOperators.Xlimit import Xlimit
+from DeTrusty.Operators.AnapsidOperators.Xoffset import Xoffset
+from DeTrusty.Operators.AnapsidOperators.Xorderby import Xorderby
+from DeTrusty.Operators.AnapsidOperators.Xproject import Xproject
+from DeTrusty.Operators.AnapsidOperators.Xunion import Xunion
+from DeTrusty.Operators.BlockingOperators.Union import Union
 from DeTrusty.Operators.NonBlockingOperators.NestedHashJoinFilter import NestedHashJoinFilter as NestedHashJoin
 from DeTrusty.Operators.NonBlockingOperators.NestedHashOptionalFilter import NestedHashOptionalFilter as NestedHashOptional
-from DeTrusty.Operators.BlockingOperators.Union import Union
-from DeTrusty.Decomposer.Tree import Leaf, Node
 from DeTrusty.Sparql.Parser.services import Service, Optional, UnionBlock, JoinBlock
 
 
@@ -39,8 +39,8 @@ class Planner(object):
         operatorTree = self.includePhysicalOperatorsQuery()
 
         # Adds the order by operator to the plan.
-        #if (len(query.order_by) > 0):
-        #    operatorTree = TreePlan(Xorderby(query.order_by), operatorTree.vars, operatorTree)
+        if (len(query.order_by) > 0):
+            operatorTree = TreePlan(Xorderby(query.order_by), operatorTree.vars, operatorTree)
 
         # Adds the project operator to the plan.
         operatorTree = TreePlan(Xproject(query.args), operatorTree.vars, operatorTree)
@@ -98,8 +98,6 @@ class Planner(object):
                     ol.append(self.includePhysicalOperatorsUnionBlock(bgp.bgg))
                 elif isinstance(bgp, UnionBlock):
                     tl.append(self.includePhysicalOperatorsUnionBlock(bgp))
-#                elif isinstance(bgp, Service):
-#                    tl.append(bgp)
         elif isinstance(jb.triples, Node) or isinstance(jb.triples, Leaf):
             tl = [self.includePhysicalOperators(jb.triples)]
         else:  # this should never be the case..
@@ -151,8 +149,8 @@ class Planner(object):
                             n = TreePlan(Xfilter(f), n.vars, n)
                     return n
             else:
-                print ("tree.service" + str(type(tree.service)) + str(tree.service))
-                print ("Error Type not considered")
+                print("tree.service" + str(type(tree.service)) + str(tree.service))
+                print("Error Type not considered")
 
         elif isinstance(tree, Node):
             left_subtree = self.includePhysicalOperators(tree.left)
@@ -516,7 +514,7 @@ class Planner(object):
 
 
 class TreePlan(object):
-    '''
+    """
     Represents a plan to be executed by the engine.
 
     It is composed by a left node, a right node, and an operator node.
@@ -527,7 +525,7 @@ class TreePlan(object):
     It creates a process for every node of the plan.
     The left node is always evaluated.
     If the right node is an independent operator or a subtree, it is evaluated.
-    '''
+    """
     def __init__(self, operator, vars, left=None, right=None):
         self.operator = operator
         self.vars = vars
@@ -588,7 +586,6 @@ class TreePlan(object):
         return self.constantNumber()/self.places()
 
     def getCardinality(self):
-
         if self.cardinality is None:
             self.cardinality = self.operator.getCardinality(self.left, self.right)
         return self.cardinality
@@ -650,7 +647,7 @@ class TreePlan(object):
 
 
 class IndependentOperator(object):
-    '''
+    """
     Implements an operator that can be resolved independently.
 
     It receives as input the url of the server to be contacted,
@@ -660,7 +657,7 @@ class IndependentOperator(object):
     The execute() method reads tuples from the input queue and
     response message and the buffer size (length of the string)
     place them in the output queue.
-    '''
+    """
     def __init__(self, query, tree, c, config):
         (e, sq, vs) = tree.getInfoIO(query)
         self.contact = c
@@ -727,7 +724,6 @@ class IndependentOperator(object):
         return self.tree.places()
 
     def constantNumber(self):
-
         return self.tree.constantNumber()
 
     def constantPercentage(self):
@@ -812,7 +808,6 @@ def contactSource(molecule, query, queue, config, limit=-1):
 
 
 def contactSourceAux(referer, server, path, port, query, queue):
-
     # Setting variables to return.
     b = None
     reslist = 0
@@ -868,7 +863,7 @@ def contactSourceAux(referer, server, path, port, query, queue):
                         #queue.put(elem)
 
             else:
-                print ("the source " + str(server) + " answered in " + res.getheader("content-type") + " format, instead of"
+                print("the source " + str(server) + " answered in " + res.getheader("content-type") + " format, instead of"
                        + " the JSON format required, then that answer will be ignored")
     except Exception as e:
         print("Exception while sending request to ", referer, "msg:", e)
