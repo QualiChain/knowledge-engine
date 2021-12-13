@@ -1,7 +1,7 @@
-FROM python:3.8.11-slim-buster
+FROM python:3.10.1-slim-bullseye
 MAINTAINER Philipp D. Rohde <philipp.rohde@tib.eu>
 
-ENV VERSION="0.3.0-qc"
+ENV VERSION="0.3.1-qc"
 
 # install dependencies
 COPY requirements.txt /DeTrusty/requirements.txt

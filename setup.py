@@ -4,7 +4,7 @@ from distutils.core import setup
 from setuptools import find_packages
 
 setup(name='DeTrusty',
-      version='0.3.0+qc',
+      version='0.3.1+qc',
       description='DeTrusty - Decentralized and Trustable Query Engine',
       author='Philipp D. Rohde',
       author_email='philipp.rohde@tib.eu',
