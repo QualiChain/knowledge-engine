@@ -7,16 +7,16 @@ DeTrusty differs from other query engines through its focus on the explainabilit
 **Notice: DeTrusty is under active development! 
 The current version is a federated query engine following the SPARQL 1.1 protocol, i.e., you can use the SERVICE clause to specify the endpoint.
 However, the parts about the explainability and trustworthiness have not been implemented yet.
-Additionally, the GROUP BY operator has not yet been implemented.**
+Additionally, the GROUP BY operator as well as aggregates have not yet been implemented.**
 
 ## Running DeTrusty
 In order to run DeTrusty, build the Docker image from the source code:
 
-``docker build . -t sdmtib/detrusty:v0.3.0-qc``
+``docker build . -t sdmtib/detrusty:v0.3.1-qc``
 
 Once the Docker image is built, you can start DeTrusty:
 
-``docker run --name DeTrusty -d -p 5000:5000 sdmtib/detrusty:v0.3.0-qc``
+``docker run --name DeTrusty -d -p 5000:5000 sdmtib/detrusty:v0.3.1-qc``
 
 You can now start to make POST requests to the DeTrusty API running at localhost:5000.
 
